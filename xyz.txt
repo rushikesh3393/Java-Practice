@@ -1,0 +1,202 @@
+void join(): this method is used for hold the thread execution 
+when ever running thread is not completed.
+
+boolean isAlive(): this method is used for check the 
+status of thread if thread is live then return true otherwise
+return false.
+
+import java.lang.*; //step1
+class A extends Thread   //step2
+{   public void run()
+     {
+        try{
+           for(int i=1; i<=5; i++)
+            { System.out.printf("First Thread %d\t%b\n",i,this.isAlive());
+                if(i==3)
+                { stop();
+                }
+              sleep(10000);
+           }
+         }
+        catch(Exception ex)
+        { System.out.println("Error is  "+ex);
+        }
+     }
+}
+class C extends Thread
+{
+      public void run()
+     {
+        try{
+           for(int i=1; i<=50; i++)
+            { System.out.printf("Second Thread %d\n",i);
+              sleep(1000);
+           }
+         }
+        catch(Exception ex)
+        { System.out.println("Error is  "+ex);
+        }
+     }
+}
+public class ThreadApp
+{ public static void main(String x[])throws Exception
+    {
+                 A a1 = new A();
+                  a1.start();
+               a1.join();
+System.out.println("Now status of first thread is  "+a1.isAlive());
+                C c1 = new C();
+                c1.start();
+    }
+}
+
+synchronization and asynchronization in thread
+________________________________________
+synchronization means if two or more than two threads 
+use the single resource or object sequentially one by one called as 
+synchronization 
+
+asynchronization means if two or more than two threads
+use the single resource or object
+ symultiniously called as asynchronization
+
+
+wait() : wait method is used for hold the thread execution 
+for a particular time period
+it is originally method of Object class
+
+there are two types of wait in java
+______________________________
+    a) conditional wait : conditional wait means if thread 
+restart its execution after some specified time period 
+called as conditional wait
+
+void wait(int miliseconds);
+
+    b) unconditional wait : unconditional wait means if
+thread not reexecute self after some specified time period
+called as unconditional wait we need to pass request for 
+reexecution purpose called as unconditional wait
+
+  void wait();
+
+in the case of unconditional we have to send request for 
+reexecution and for that we have the two methods 
+name as notify() and notifyAll()
+
+notify() and notifyAll() methods help us to send the request 
+to waited thread for reexecution if threads in unconditional wait.
+
+notify() : notify() method is used for call the only one waited thread
+at time in first in first out order format
+means notify() method can work with a queue algoritham
+
+notifyAll(): notifyAll() call the all waited threads in first in
+last out format means last waited thread call first and 
+first waited thread call last.
+
+Example
+_______
+import java.util.*;
+class Table
+{ synchronized void showTable(int x)
+    {
+        try{
+          for(int i=1; i<=10; i++)
+         { System.out.printf("%d X %d = %d\n",i,x,i*x);
+                  if(i==5)
+                  {  wait();
+                 }
+            Thread.sleep(1000);
+         }
+         }
+       catch(Exception ex)
+        { System.out.println("Error is  "+ex);
+        }
+    }
+  synchronized void recall()
+   { try{
+           notifyAll();
+      }
+     catch(Exception ex)
+      { System.out.println("Error is  "+ex);
+      }
+   }
+}
+class Two extends Thread
+{  Table table;
+    void setTable(Table table)
+    { this.table=table;
+    }
+   public void run()
+    { table.showTable(2);
+    }
+}
+class Three extends Thread
+{ Table table;
+    void setTable(Table table)
+    { this.table=table;
+    }
+   public void run()
+    { table.showTable(3);
+    }
+}
+public class SyncAsyncApp
+{ public static void main(String x[])
+   {
+             Table t =new Table();
+            Two tw = new Two();
+              tw.setTable(t);
+               tw.start();
+            Three th = new Three();
+              th.setTable(t);
+              th.start();
+
+    do{
+      Scanner xyz  =new Scanner(System.in);
+       String msg=xyz.nextLine();
+         if(msg.equals("restart"))
+            { t.recall();
+             }
+           if(msg.equals("stop"))
+            { System.exit(0);
+           }
+     }while(true);
+   } 
+}
+
+Q.what is the diff between wait and sleep
+  _______________________________________
+1) wait is a method of Object class and sleep is static method of 
+thread class
+2) wait method only works in synchronized block and sleep
+   can work in synchronized as well as asynchronized block
+3) there are two types of wait condition and uncondition but 
+sleep is only works with conditional wait
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
